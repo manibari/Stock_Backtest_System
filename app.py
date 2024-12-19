@@ -3,7 +3,7 @@ import pandas as pd
 import os
 from download_data import download_stock_data
 from strategy_template import sma_cross_strategy_5_10, sma_cross_strategy_20_60, buy_and_hold_strategy, rsi_strategy
-from backtest import backtest_strategy, plot_backtest_results
+from backtest import backtest_strategy
 
 st.title('股票回測系統')
 
@@ -15,6 +15,15 @@ end_date = st.date_input('結束日期', pd.to_datetime('2024-12-17'))
 if st.button('下載數據'):
     file_path = download_stock_data(ticker, start_date, end_date)
     st.success(f'數據已下載並儲存至 {file_path}')
+
+    # 提供下載鏈接
+    with open(file_path, 'rb') as file:
+        st.download_button(
+            label="下載 CSV",
+            data=file,
+            file_name=f"{ticker}.csv",
+            mime='text/csv'
+        )
 
 # 股票策略回測
 st.header('股票策略回測')
@@ -49,18 +58,7 @@ if uploaded_file is not None:
     trade_dates = signals[signals['positions']
                           != 0].sort_index(ascending=False)
 
-    # 計算每次買進賣出的股票張數
-    trade_dates['shares'] = (
-        initial_capital / trade_dates['price']).astype(int)
-
-    # 計算每次買進賣出的實際獲利
-    trade_dates['profit'] = trade_dates.apply(
-        lambda row: row['price'] * row['shares'] if row['positions'] == -1 else pd.NA, axis=1
-    )
-    trade_dates['profit'] = trade_dates['profit'].diff()
-
-    st.write(trade_dates[['price', 'short_mavg', 'long_mavg',
-             'signal', 'positions', 'shares', 'profit']])
+    st.write(trade_dates[['price', 'signal', 'positions']])
 
     # 儲存回測結果
     if st.button('儲存回測結果'):
