@@ -15,7 +15,7 @@ end_date = st.date_input('結束日期', pd.to_datetime('2024-12-17'))
 
 # 自動下載數據並提供下載鏈接
 file_path = download_stock_data(ticker, start_date, end_date)
-st.success(f'數據已下載並儲存至 {file_path}')
+# st.success(f'數據已下載並儲存至 {file_path}')
 
 # 提供下載鏈接
 with open(file_path, 'rb') as file:
