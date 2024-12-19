@@ -12,18 +12,19 @@ st.header('股票數據下載')
 ticker = st.text_input('輸入股票代碼', 'QQQ')
 start_date = st.date_input('開始日期', pd.to_datetime('2020-01-01'))
 end_date = st.date_input('結束日期', pd.to_datetime('2024-12-17'))
-if st.button('下載數據'):
-    file_path = download_stock_data(ticker, start_date, end_date)
-    st.success(f'數據已下載並儲存至 {file_path}')
 
-    # 提供下載鏈接
-    with open(file_path, 'rb') as file:
-        st.download_button(
-            label="下載 CSV",
-            data=file,
-            file_name=f"{ticker}.csv",
-            mime='text/csv'
-        )
+# 自動下載數據並提供下載鏈接
+file_path = download_stock_data(ticker, start_date, end_date)
+st.success(f'數據已下載並儲存至 {file_path}')
+
+# 提供下載鏈接
+with open(file_path, 'rb') as file:
+    st.download_button(
+        label="下載 CSV",
+        data=file,
+        file_name=f"{ticker}.csv",
+        mime='text/csv'
+    )
 
 # 股票策略回測
 st.header('股票策略回測')
